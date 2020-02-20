@@ -10,23 +10,8 @@ sudo apt-get install -y -qq \
 	libwww-perl \
 	lsb-release
 if ! ( echo $is | grep -q deploy ); then
-	sudo apt-get update
-	if ! ( echo $arch_build | grep -q armhf ); then
-		sudo apt-get install build-essential sbuild debootstrap debhelper schroot ubuntu-dev-tools moreutils piuparts -y -qq
-		chmod +x .travis/emu/i386_chroot.sh
-		sudo adduser $USER sbuild
-		echo "/home                 /home  none  rw,bind  0  0" | sudo tee -a /etc/schroot/sbuild/fstab
-	fi
-
-	echo $arch_build
-
-	sudo apt-get install -y -qq \
-		qemu \
-		qemu-user-static \
-		binfmt-support
-	chmod +x .travis/emu/armhf_chroot.sh
-	chmod +x .travis/emu/aarch_chroot.sh
-
-
-
+	docker run --rm --privileged docker/binfmt:a7996909642ee92942dcd6cff44b9b95f08dad64
+	docker run --rm arm64v8/ubuntu:16.04 uname -a
+	docker run --rm arm32v7/ubuntu:16.04 uname -a
+	docker run --rm i386/ubuntu:16.04 uname -a
 fi

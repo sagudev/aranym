@@ -18,16 +18,15 @@ linux)
 		zsync \
 		xz-utils \
 		libjson-perl \
-		libwww-perl
-	if test "$emu" = true; then
-		sudo apt-get install -y \
-			git \
-			autoconf \
-			automake \
-			build-essential \
-			gcc-4.8 \
-			g++-4.8 \
-			libx11-dev
+		libwww-perl \
+		git \
+		autoconf \
+		automake \
+		build-essential \
+		gcc-4.8 \
+		g++-4.8 \
+		libx11-dev
+
 		rm /usr/bin/gcc
 		rm /usr/bin/g++
 		ln -s /usr/bin/gcc-4.8 /usr/bin/gcc

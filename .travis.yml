@@ -1,3 +1,24 @@
+language: c
+branches:
+  only:
+    - master
+    - dev
+
+addons:
+  snaps:
+   - name: snapcraft
+     channel: stable
+     confinement: classic
+
+compiler:
+  - gcc
+
+env:
+  global:
+    - MAKEFLAGS="-j 2"
+
+services: docker
+
 matrix:
   include:
     - os: linux
@@ -13,7 +34,6 @@ matrix:
       sudo: required
       services: docker
       env: 
-        - emu=true
         - arch_build=i386
       before_install:
         - . ./.travis/emu/install_prerequisities.sh
@@ -27,7 +47,6 @@ matrix:
       dist: xenial
       sudo: required
       env: 
-        - emu=true
         - arch_build=armhf
         - typec=1
       before_install:
@@ -45,7 +64,6 @@ matrix:
       dist: xenial
       sudo: required
       env: 
-        - emu=true
         - arch_build=armhf
         - typec=2
       before_install:
@@ -63,7 +81,6 @@ matrix:
       dist: xenial
       sudo: required
       env: 
-        - emu=true
         - arch_build=armhf
         - typec=3
       before_install:
@@ -82,7 +99,6 @@ matrix:
     #   dist: xenial
     #   sudo: required
     #   env: 
-    #     - emu=true
     #     - arch_build=aarch
     #     - typec=1
     #   before_install:
@@ -100,7 +116,6 @@ matrix:
       dist: xenial
       sudo: required
       env: 
-        - emu=true
         - arch_build=aarch
         - typec=2
       before_install:
@@ -118,7 +133,6 @@ matrix:
       dist: xenial
       sudo: required
       env: 
-        - emu=true
         - arch_build=aarch
         - typec=3
       before_install:
@@ -172,18 +186,6 @@ before_script:
 
 script:
   - . ./.travis/build.sh
-        
-branches:
-  only:
-    - master
-    - dev
-
-compiler:
-  - gcc
-
-env:
-  global:
-    - MAKEFLAGS="-j 2"
 
 deploy:
   skip_cleanup: true
