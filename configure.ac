@@ -1397,6 +1397,12 @@ elif test "$GCC" = yes && $HAVE_ARM; then
            CFLAGS="$CFLAGS -march=armv6"
            CXXFLAGS="$CXXFLAGS -march=armv6"
 	   ;;
+	armv7*|armv8*|armv9*)
+           ASM_OPTIMIZATIONS="ARM/V6 architecture w optimized flags"
+	   DEFINES="$DEFINES -DARMV6_ASSEMBLY -DARM_ASSEMBLY -DOPTIMIZED_FLAGS"
+           CFLAGS="$CFLAGS -marm"
+           CXXFLAGS="$CXXFLAGS -marm"
+	   ;;
 	*)
 	   dnl Hack until we find a better way
            case "$host_os" in
