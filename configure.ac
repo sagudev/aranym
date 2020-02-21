@@ -1391,7 +1391,7 @@ elif test "$GCC" = yes && $HAVE_ARM; then
   dnl ARM CPU
   if [[ "x$HAVE_GAS" = "xyes" ]]; then
     case "$host_cpu" in
-	armv6*|armv7*|armv8*|armv9*)
+	armv6*)
            ASM_OPTIMIZATIONS="ARM/V6 architecture w optimized flags"
 	   DEFINES="$DEFINES -DARMV6_ASSEMBLY -DARM_ASSEMBLY -DOPTIMIZED_FLAGS"
            CFLAGS="$CFLAGS -march=armv6"
