@@ -75,15 +75,15 @@ linux)
 		archive_tag=-`uname -s 2>/dev/null`-`uname -r 2>/dev/null`
 		;;
 	esac
-	if ( echo $is | grep -q deploy ); then
-		if ( echo $arch | grep -q armhf ); then
-			VENDOR=Raspbian
-			archive_tag=-stretch-${CPU_TYPE}
-		elif ( echo $arch | grep -q aarch ); then
-			VENDOR=Ubuntu
-	 		archive_tag=-xenial-${CPU_TYPE}
-		fi
-	fi
+	#if ( echo $is | grep -q deploy ); then
+	#	if ( echo $arch | grep -q armhf ); then
+	#		VENDOR=Raspbian
+	#		archive_tag=-stretch-${CPU_TYPE}
+	#	elif ( echo $arch | grep -q aarch ); then
+	#		VENDOR=Ubuntu
+	# 		archive_tag=-xenial-${CPU_TYPE}
+	#	fi
+	#fi
 	# should not be needed
 	# if ( echo $arch_build | grep -q i386 ); then
 	# 	VENDOR=Ubuntu

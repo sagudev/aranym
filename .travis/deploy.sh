@@ -295,19 +295,19 @@ if ! ( echo $is | grep -q deploy ); then # build job
 		linux) # if linux use cache
 			if ! ( echo $arch_build | grep -q armhf ); then # Except if is not armhf linux
 				if ! ( echo $arch_build | grep -q aarch ); then
-					echo "------------ normal --------------------"
+					echo "------------ normal ------------"
 					normal_deploy
 					if ! [ "${TRAVIS_PULL_REQUEST}" != "false" ]; then
 						bined
 						snap_create
 					fi
 				else
-					echo "------------ cache --------------------"
+					echo "------------ cache ------------"
 					cache_deploy
 				fi
 
 			else # if armhf use cache
-				echo "------------ cache --------------------"
+				echo "------------ cache ------------"
 				cache_deploy
 			fi
 		;;
@@ -320,7 +320,7 @@ if ! ( echo $is | grep -q deploy ); then # build job
 		;;
 	esac
 else # deploy job
-	echo "------------ deploy --------------------"
+	echo "------------ deploy ------------"
 	uncache_deploy
 	if ! [ "${TRAVIS_PULL_REQUEST}" != "false" ]; then
 		bined

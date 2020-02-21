@@ -24,21 +24,17 @@ matrix:
     - os: linux
       language: c
       dist: xenial
-      sudo: required
       services: docker
       env:
         - arch_build=amd64
     - os: linux
       language: c
       dist: xenial
-      sudo: required
       services: docker
       env: 
         - arch_build=i386
       before_install:
         - . ./.travis/emu.sh
-      before_script:
-        - echo "skipped" # skip tag
       script:
         - echo "skipped" # skip tag
     - os: osx
@@ -47,66 +43,51 @@ matrix:
     - os: linux
       language: c
       dist: xenial
-      sudo: required
       env: 
         - arch_build=armhf
         - typec=1
       before_install:
         - . ./.travis/emu.sh
-      before_script:
-        - echo "skipped" # skip tag
       script:
         - echo "skipped" # skip tag
     - os: linux
       language: c
       dist: xenial
-      sudo: required
       env: 
         - arch_build=armhf
         - typec=2
       before_install:
         - . ./.travis/emu.sh
-      before_script:
-        - echo "skipped" # skip tag
       script:
         - echo "skipped" # skip tag
     - os: linux
       language: c
       dist: xenial
-      sudo: required
       env: 
         - arch_build=armhf
         - typec=3
       before_install:
         - . ./.travis/emu.sh
-      before_script:
-        - echo "skipped" # skip tag
       script:
         - echo "skipped" # skip script tag
     - os: linux
       language: c
       dist: xenial
-      sudo: required
       env: 
         - arch_build=aarch
         - typec=2
       before_install:
         - . ./.travis/emu.sh
-      before_script:
-        - echo "skipped" # skip tag
       script:
         - echo "skipped" # skip script tag
     - os: linux
       language: c
       dist: xenial
-      sudo: required
       env: 
         - arch_build=aarch
         - typec=3
       before_install:
         - . ./.travis/emu.sh
-      before_script:
-        - echo "skipped" # skip tag
       script:
         - echo "skipped" # skip script tag
     - stage: deploy
