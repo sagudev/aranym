@@ -159,6 +159,13 @@ matrix:
     - os: osx
       osx_image: xcode11.1
       language: objective-c
+  exclude:
+    - if: type = pull_request
+      env: arch=aarch
+    - if: type = pull_request
+      env: arch=armhf
+    - if: type = pull_request
+      env: is=deploy
 
 before_install:
   - .travis/install_ssh_id.sh
