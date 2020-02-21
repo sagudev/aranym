@@ -25,7 +25,8 @@ linux)
 		build-essential \
 		gcc-4.8 \
 		g++-4.8 \
-		libx11-dev
+		libx11-dev \
+		lsb-release
 
 		rm /usr/bin/gcc
 		rm /usr/bin/g++
