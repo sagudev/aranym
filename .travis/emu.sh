@@ -6,17 +6,17 @@ if ! ( echo $is | grep -q deploy ); then
 	case "$arch_build" in
 		i386)
 			docker run --rm --env-file <(env) \
-				-v `/home/travis`:`/home/travis` -w `/home/travis` \
+				-v "/home/travis":"/home/travis" -w "/home/travis" \
 				--platform 386 ubuntu:16.04 "${TRAVIS_BUILD_DIR}/.travis/emu.sh"
 		;;
 		armhf)
 			docker run --rm --env-file <(env) \
-				-v `/home/travis`:`/home/travis` -w `/home/travis` \
+				-v "/home/travis":"/home/travis" -w "/home/travis" \
 				arm32v7/ubuntu:16.04 "${TRAVIS_BUILD_DIR}/.travis/emu.sh"
 		;;
 		aarch)
 			docker run --rm --env-file <(env) \
-				-v `/home/travis`:`/home/travis` -w `/home/travis` \
+				-v "/home/travis":"/home/travis" -w "/home/travis" \
 				arm64v8/ubuntu:16.04 "${TRAVIS_BUILD_DIR}/.travis/emu.sh"	
 		;;
 	esac
