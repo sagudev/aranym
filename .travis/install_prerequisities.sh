@@ -33,6 +33,7 @@ linux)
 		ln -s /usr/bin/gcc-4.8 /usr/bin/gcc
 		ln -s /usr/bin/g++-4.8 /usr/bin/g++
 		gcc -v
+		/usr/local/bin/sdl-config --version
 	;;
 
 osx)
