@@ -36,7 +36,7 @@ matrix:
       env: 
         - arch_build=i386
       before_install:
-        - . ./.travis/emu.sh.sh
+        - . ./.travis/emu.sh
       script:
         - sudo sg sbuild -c "bash .travis/emu/i386_chroot.sh"
     - os: osx
@@ -50,7 +50,7 @@ matrix:
         - arch_build=armhf
         - typec=1
       before_install:
-        - . ./.travis/emu.sh.sh
+        - . ./.travis/emu.sh
       before_script:
         - echo "skipped" # skip tag
       script:
@@ -67,7 +67,7 @@ matrix:
         - arch_build=armhf
         - typec=2
       before_install:
-        - . ./.travis/emu.sh.sh
+        - . ./.travis/emu.sh
       before_script:
         - echo "skipped" # skip tag
       script:
@@ -84,7 +84,7 @@ matrix:
         - arch_build=armhf
         - typec=3
       before_install:
-        - . ./.travis/emu.sh.sh
+        - . ./.travis/emu.sh
       before_script:
         - echo "skipped" # skip tag
       script:
@@ -102,7 +102,7 @@ matrix:
     #     - arch_build=aarch
     #     - typec=1
     #   before_install:
-    #     - . ./.travis/emu.sh.sh
+    #     - . ./.travis/emu.sh
     #   before_script:
     #     - echo "skipped" # skip tag
     #   script:
@@ -119,7 +119,7 @@ matrix:
         - arch_build=aarch
         - typec=2
       before_install:
-        - . ./.travis/emu.sh.sh
+        - . ./.travis/emu.sh
       before_script:
         - echo "skipped" # skip tag
       script:
@@ -136,7 +136,7 @@ matrix:
         - arch_build=aarch
         - typec=3
       before_install:
-        - . ./.travis/emu.sh.sh
+        - . ./.travis/emu.sh
       before_script:
         - echo "skipped" # skip tag
       script:
@@ -154,7 +154,7 @@ matrix:
       before_install:
         - .travis/install_ssh_id.sh
         - unset SSH_ID
-        - . ./.travis/emu.sh.sh
+        - . ./.travis/emu.sh
       script:
         - echo "skipped" # skip script tag
       services: docker
@@ -167,7 +167,7 @@ matrix:
       before_install:
         - .travis/install_ssh_id.sh
         - unset SSH_ID
-        - . ./.travis/emu.sh.sh
+        - . ./.travis/emu.sh
       script:
         - echo "skipped" # skip script tag
       services: docker
