@@ -143,4 +143,5 @@ deploy:
   skip_cleanup: true
   provider: script
   script: .travis/deploy.sh
-  all_branches: true
+  on:
+    all_branches: true
