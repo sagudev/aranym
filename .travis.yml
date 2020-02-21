@@ -37,8 +37,10 @@ matrix:
         - arch_build=i386
       before_install:
         - . ./.travis/emu.sh
+      before_script:
+        - echo "skipped" # skip tag
       script:
-        - sudo sg sbuild -c "bash .travis/emu/i386_chroot.sh"
+        - echo "skipped" # skip tag
     - os: osx
       osx_image: xcode8.3
       language: objective-c
@@ -54,7 +56,7 @@ matrix:
       before_script:
         - echo "skipped" # skip tag
       script:
-        - sudo ./.travis/emu/armhf_chroot.sh
+        - echo "skipped" # skip tag
       deploy:
         skip_cleanup: true
         provider: script
@@ -71,7 +73,7 @@ matrix:
       before_script:
         - echo "skipped" # skip tag
       script:
-        - sudo ./.travis/emu/armhf_chroot.sh
+        - echo "skipped" # skip tag
       deploy:
         skip_cleanup: true
         provider: script
@@ -88,29 +90,11 @@ matrix:
       before_script:
         - echo "skipped" # skip tag
       script:
-        - sudo ./.travis/emu/armhf_chroot.sh
+        - echo "skipped" # skip script tag
       deploy:
         skip_cleanup: true
         provider: script
         script: echo "skipped" # skip for now then move it from chroot
- # enable when aarch64 will support jit
-    # - os: linux
-    #   language: c
-    #   dist: xenial
-    #   sudo: required
-    #   env: 
-    #     - arch_build=aarch
-    #     - typec=1
-    #   before_install:
-    #     - . ./.travis/emu.sh
-    #   before_script:
-    #     - echo "skipped" # skip tag
-    #   script:
-    #     - sudo ./.travis/emu/aarch_chroot.sh
-    #   deploy:
-    #     skip_cleanup: true
-    #     provider: script
-    #     script: echo "skipped" # skip for now then move it from chroot
     - os: linux
       language: c
       dist: xenial
@@ -123,7 +107,7 @@ matrix:
       before_script:
         - echo "skipped" # skip tag
       script:
-        - sudo sg sbuild -c "bash .travis/emu/aarch_chroot.sh"
+        - echo "skipped" # skip script tag
       deploy:
         skip_cleanup: true
         provider: script
@@ -140,7 +124,7 @@ matrix:
       before_script:
         - echo "skipped" # skip tag
       script:
-        - sudo sg sbuild -c "bash .travis/emu/aarch_chroot.sh"
+        - echo "skipped" # skip script tag
       deploy:
         skip_cleanup: true
         provider: script
