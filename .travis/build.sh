@@ -96,9 +96,9 @@ linux)
 			2) # mmu
 				mkdir mmu
 				cd mmu
-				../configure $common_opts --enable-lilo --enable-fullmmu || cat config.log
+				../configure $common_opts --enable-lilo --enable-fullmmu || exit 1
 				make depend
-				make || cat config.log
+				make || exit 1
 				cd ..
 				mkdir -p "$BUILDROOT${bindir}"
 				install -s -m 755 mmu/src/aranym "$BUILDROOT${bindir}/aranym-mmu"
@@ -110,9 +110,9 @@ linux)
 				)
 			;;
 			3) # normal build
-				./configure $common_opts || cat config.log
+				./configure $common_opts || exit 1
 				make depend
-				make || cat config.log
+				make || exit 1
 				
 				make DESTDIR="$BUILDROOT" install-strip || exit 1
 				sudo chown root "$BUILDROOT${bindir}/aratapif"
