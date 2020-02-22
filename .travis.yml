@@ -6,9 +6,13 @@ branches:
 
 addons:
   snaps:
-   - name: snapcraft
-     channel: stable
-     confinement: classic
+    - name: snapcraft
+      channel: stable
+      confinement: classic
+    - name: multipass
+      channel: stable
+      confinement: classic
+  
 
 compiler:
   - gcc
