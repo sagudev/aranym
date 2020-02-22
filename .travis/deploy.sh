@@ -70,7 +70,8 @@ function snap_create {
 	sed -i "0,/aranym/ s/aranym/${SNAP_NAME}/" snap/snapcraft.yaml
 	sed -i "0,/version:/ s/.*version.*/version: $VERSION/" snap/snapcraft.yaml
 	echo "$SNAP_TOKEN" | snapcraft login --with -
-	snapcraft --target-arch=$snap_cpu && snapcraft push --release=edge *.snap
+	snapcraft --destructive-mode --target-arch=$snap_cpu
+	snapcraft push --release=edge *.snap
 	if $isrelease; then
 		echo "Stable release on Snap"
 		export revision=$(snapcraft status $SNAP_NAME --arch $snap_cpu | grep "edge" | awk '{print $NF}')
