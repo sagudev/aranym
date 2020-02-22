@@ -18,9 +18,6 @@ then
 	echo "error: SNAP_TOKEN is undefined" >&2
 	exit 1
 fi
-if ( echo $arch_build | grep -q i386 ); then 
-	ARCHIVE="${PROJECT_LOWER}-${ATAG}.tar.xz"
-fi
 export SRCDIR="${PWD}"
 # variables
 RELEASE_DATE=`date -u +%Y-%m-%dT%H:%M:%S`
@@ -45,7 +42,7 @@ function bined {
 	cd ${SRCDIR}
 }
 
-function snap_create {
+function snap_build {
 	case "$CPU_TYPE" in
 		x86_64)
 			snap_cpu=amd64
@@ -64,20 +61,39 @@ function snap_create {
 			echo "Wrong arch in deploy for snap"
 		;;
 	esac
-	echo "SNAP_TOKEN=$SNAP_TOKEN" > env.list
-	echo "snap_cpu=$snap_cpu" >> env.list
-	echo "SNAP_NAME=$SNAP_NAME" >> env.list
+	sed -i "0,/aranym/ s/aranym/${SNAP_NAME}/" snap/snapcraft.yaml
+	sed -i "0,/version:/ s/.*version.*/version: $VERSION/" snap/snapcraft.yaml
+	snapcraft --destructive-mode --target-arch=$snap_cpu
+}
+
+function snap_push {
+	case "$CPU_TYPE" in
+		x86_64)
+			snap_cpu=amd64
+		;;
+		i386)
+			snap_cpu=i386
+		;;
+		armhf)
+			snap_cpu=armhf
+		;;
+		aarch)
+			snap_cpu=arm64
+			sed -i '65,91d' snap/snapcraft.yaml # no jit in aarch64
+		;;
+		*)
+			echo "Wrong arch in deploy for snap"
+		;;
+	esac
 	sed -i "0,/aranym/ s/aranym/${SNAP_NAME}/" snap/snapcraft.yaml
 	sed -i "0,/version:/ s/.*version.*/version: $VERSION/" snap/snapcraft.yaml
 	echo "$SNAP_TOKEN" | snapcraft login --with -
-	snapcraft --destructive-mode --target-arch=$snap_cpu
 	snapcraft push --release=edge *.snap
 	if $isrelease; then
 		echo "Stable release on Snap"
 		export revision=$(snapcraft status $SNAP_NAME --arch $snap_cpu | grep "edge" | awk '{print $NF}')
 		snapcraft release $SNAP_NAME $revision stable
 	fi
-	rm env.list
 }
 
 function normal_deploy {
@@ -290,41 +306,59 @@ function uncache_deploy {
 
 }
 
-# Check if it is deploy or build job
-if ! ( echo $is | grep -q deploy ); then # build job
-	case "$TRAVIS_OS_NAME" in
-		linux) # if linux use cache
-			if ! ( echo $arch_build | grep -q armhf ); then # Except if is not armhf linux
-				if ! ( echo $arch_build | grep -q aarch ); then
-					echo "------------ normal ------------"
-					normal_deploy
-					if ! [ "${TRAVIS_PULL_REQUEST}" != "false" ]; then
-						bined
-						snap_create
+# build snap in emu
+if [ "$emu" = true ] ; then
+	snap_build
+    exit 0
+else
+	# Check if it is deploy or build job
+	if ! ( echo $is | grep -q deploy ); then # build job
+		case "$TRAVIS_OS_NAME" in
+			linux) # if linux use cache
+				if ! ( echo $arch_build | grep -q armhf ); then # Except if is not armhf linux
+					if ! ( echo $arch_build | grep -q aarch ); then
+						echo "------------ normal ------------"
+						normal_deploy
+						if ! [ "${TRAVIS_PULL_REQUEST}" != "false" ]; then
+							bined
+							snap_build
+							snap_push
+						fi
+					else
+						echo "------------ cache ------------"
+						cache_deploy
 					fi
-				else
+				else # if armhf use cache
 					echo "------------ cache ------------"
 					cache_deploy
 				fi
-
-			else # if armhf use cache
-				echo "------------ cache ------------"
-				cache_deploy
-			fi
-		;;
-		osx) # directly push
-			normal_deploy
-		;;
-		*)
-			echo "wrong TRAVIS_OS_NAME"
-			exit 1;
-		;;
-	esac
-else # deploy job
-	echo "------------ deploy ------------"
-	uncache_deploy
-	if ! [ "${TRAVIS_PULL_REQUEST}" != "false" ]; then
-		bined
-		snap_create
+			;;
+			osx) # directly push
+				normal_deploy
+			;;
+			*)
+				echo "wrong TRAVIS_OS_NAME"
+				exit 1;
+			;;
+		esac
+	else # deploy job
+		echo "------------ deploy ------------"
+		uncache_deploy
+		if ! [ "${TRAVIS_PULL_REQUEST}" != "false" ]; then
+			bined
+			case "$arch" in
+				armhf)
+					docker run --rm --env-file <(env) \
+						-v "/home/travis":"/home/travis" -w "/home/travis" \
+						arm32v7/ubuntu:16.04 "${TRAVIS_BUILD_DIR}/.travis/in_emu.sh"
+				;;
+				aarch)
+					docker run --rm --env-file <(env) \
+						-v "/home/travis":"/home/travis" -w "/home/travis" \
+						arm64v8/ubuntu:16.04 "${TRAVIS_BUILD_DIR}/.travis/in_emu.sh"	
+				;;
+			esac
+			snap_push
+		fi
 	fi
 fi

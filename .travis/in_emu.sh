@@ -21,11 +21,14 @@ __EOF__
 #echo "LANG=en_US.UTF-8" > /etc/locale.conf
 #locale-gen en_US.UTF-8
 export LANG=en_US.utf8
+export emu=true
 apt install -y locales
 localedef -i en_US -c -f UTF-8 -A /usr/share/locale/locale.alias en_US.UTF-8
 . ./.travis/install_prerequisities.sh
 . ./.travis/setup_env.sh
+if ! ( echo $is | grep -q deploy ); then
 . ./.travis/build.sh
-#if !( echo $arch_build | grep -q i386 ); then 
-#. ./.travis/deploy.sh
-#fi
+fi
+if ( echo $arch_build | grep -q i386 ) || [ -z "$arch" ]; then 
+. ./.travis/deploy.sh
+fi
