@@ -71,9 +71,26 @@ function snap_install {
 	export PATH="/snap/bin:$PATH"
 	export SNAP="/snap/snapcraft/current"
 	export SNAP_NAME="snapcraft"
-	export SNAP_ARCH="amd64"
+	case "$CPU_TYPE" in
+		x86_64)
+			snap_cpu=amd64
+		;;
+		i386)
+			snap_cpu=i386
+		;;
+		armhf)
+			snap_cpu=armhf
+		;;
+		aarch)
+			snap_cpu=arm64
+			sed -i '65,91d' snap/snapcraft.yaml # no jit in aarch64
+		;;
+		*)
+			echo "Wrong arch in deploy for snap"
+		;;
+	esac
+	export SNAP_ARCH="$snap_cpu"
 	export SNAP_VERSION="$(awk '/^version:/{print $2}' $SNAP/meta/snap.yaml)"
-	export SNAP_ARCH="amd64"
 }
 
 function snap_build {
@@ -342,6 +359,7 @@ function get_cache {
 # build snap in emu
 if [ "$emu" = true ] ; then
 	snap_install
+	bined
 	snap_build
     exit 0
 else
