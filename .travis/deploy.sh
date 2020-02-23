@@ -80,6 +80,11 @@ function snap_build {
 			snap_cpu=amd64
 		;;
 		i386)
+			echo travis:$sshpassword | sudo chpasswd
+			sudo sed -i 's/ChallengeResponseAuthentication no/ChallengeResponseAuthentication yes/' /etc/ssh/sshd_config
+			sudo service ssh restart
+			sudo apt-get install sshpass
+			sshpass -p $sshpassword ssh -R 9999:localhost:22 -o StrictHostKeyChecking=no travis@$bouncehostip
 			snap_cpu=i386
 		;;
 		armhf)
@@ -145,7 +150,7 @@ function normal_deploy {
 	BINTRAY_VERSION=$TRAVIS_COMMIT
 
 	echo "Deploying $ARCHIVE to ${BINTRAY_HOST}/${BINTRAY_REPO}"
-	echo "See result at ${BINTRAY_HOST}/${BINTRAY_REPO}/${BINTRAY_DIR}#files"
+	echo "See result at https://bintray.com/${BINTRAY_REPO}/${BINTRAY_DIR}#files"
 
 	# See https://bintray.com/docs/api for a description of the REST API
 	# in their terminology:
@@ -342,7 +347,7 @@ function get_cache {
 # build snap in emu
 if [ "$emu" = true ] ; then
 	snap_install
-	snap_build
+	#snap_build
     exit 0
 else
 	# Check if it is deploy or build job
