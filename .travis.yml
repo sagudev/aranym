@@ -1,4 +1,7 @@
 language: c
+os: linux
+dist: xenial
+services: docker
 branches:
   only:
     - master
@@ -9,7 +12,6 @@ addons:
     - name: snapcraft
       channel: stable
       confinement: classic
-  
 
 compiler:
   - gcc
@@ -18,21 +20,11 @@ env:
   global:
     - MAKEFLAGS="-j 2"
 
-services: docker
-
 matrix:
   include:
-    - os: linux
-      language: c
-      dist: xenial
-      services: docker
-      env:
+    - env:
         - arch_build=amd64
-    - os: linux
-      language: c
-      dist: xenial
-      services: docker
-      env: 
+    - env: 
         - arch_build=i386
       before_install:
         - . ./.travis/emu.sh
@@ -41,50 +33,35 @@ matrix:
     - os: osx
       osx_image: xcode8.3
       language: objective-c
-    - os: linux
-      language: c
-      dist: xenial
-      env: 
+    - env: 
         - arch_build=armhf
         - typec=1
       before_install:
         - . ./.travis/emu.sh
       script:
         - echo "skipped" # skip tag
-    - os: linux
-      language: c
-      dist: xenial
-      env: 
+    - env: 
         - arch_build=armhf
         - typec=2
       before_install:
         - . ./.travis/emu.sh
       script:
         - echo "skipped" # skip tag
-    - os: linux
-      language: c
-      dist: xenial
-      env: 
+    - env: 
         - arch_build=armhf
         - typec=3
       before_install:
         - . ./.travis/emu.sh
       script:
         - echo "skipped" # skip script tag
-    - os: linux
-      language: c
-      dist: xenial
-      env: 
+    - env: 
         - arch_build=aarch
         - typec=2
       before_install:
         - . ./.travis/emu.sh
       script:
         - echo "skipped" # skip script tag
-    - os: linux
-      language: c
-      dist: xenial
-      env: 
+    - env: 
         - arch_build=aarch
         - typec=3
       before_install:
@@ -92,8 +69,6 @@ matrix:
       script:
         - echo "skipped" # skip script tag
     - stage: deploy
-      os: linux
-      dist: xenial
       env: 
         - deploy=true
         - arch=armhf
@@ -103,10 +78,7 @@ matrix:
         - . ./.travis/emu.sh
       script:
         - echo "skipped" # skip script tag
-      services: docker
     - stage: deploy
-      os: linux
-      dist: xenial
       env: 
         - deploy=true
         - arch=aarch
@@ -116,7 +88,6 @@ matrix:
         - . ./.travis/emu.sh
       script:
         - echo "skipped" # skip script tag
-      services: docker
   allow_failures:
     - os: osx
       osx_image: xcode11.1

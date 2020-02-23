@@ -42,6 +42,33 @@ function bined {
 	cd ${SRCDIR}
 }
 
+function snap_install {
+	apt install -y \
+      	curl \
+      	jq \
+      	squashfs-tools
+	# Grab the core18 snap (which snapcraft uses as a base) from the stable channel
+	# and unpack it in the proper place
+	curl -L $(curl -H 'X-Ubuntu-Series: 16' 'https://api.snapcraft.io/api/v1/snaps/details/core18' | jq '.download_url' -r) --output core18.snap
+	mkdir -p /snap/core18
+	unsquashfs -d /snap/core18/current core18.snap
+	# Grab the snapcraft snap from the edge channel and unpack it in the proper
+	# place.
+	curl -L $(curl -H 'X-Ubuntu-Series: 16' 'https://api.snapcraft.io/api/v1/snaps/details/snapcraft?channel=edge' | jq '.download_url' -r) --output snapcraft.snap
+	mkdir -p /snap/snapcraft
+	unsquashfs -d /snap/snapcraft/current snapcraft.snap
+	# Create a snapcraft runner
+	mkdir -p /snap/bin
+	echo "#!/bin/sh" > /snap/bin/snapcraft
+	snap_version="$(awk '/^version:/{print $2}' /snap/snapcraft/current/meta/snap.yaml)" && echo "export SNAP_VERSION=\"$snap_version\"" >> /snap/bin/snapcraft
+	echo 'exec "$SNAP/usr/bin/python3" "$SNAP/bin/snapcraft" "$@"' >> /snap/bin/snapcraft
+	chmod +x /snap/bin/snapcraft
+	export PATH="/snap/bin:$PATH"
+	export SNAP="/snap/snapcraft/current"
+	#ENV SNAP_NAME="snapcraft"
+	#ENV SNAP_ARCH="amd64"
+}
+
 function snap_build {
 	case "$CPU_TYPE" in
 		x86_64)
@@ -228,7 +255,7 @@ function cache_deploy {
 	echo ""
 }
 
-function uncache_deploy {
+function get_cache {
 	SRCDIR="${PWD}"
 	OUT="${SRCDIR}/.travis/out"
 	TMP="${SRCDIR}/.travis/tmp"
@@ -261,53 +288,53 @@ function uncache_deploy {
 		tar cvfJ "${OUT}/${ARCHIVE}" .
 	)
 
-	if [ "${TRAVIS_PULL_REQUEST}" != "false" ];
-		then
-			BINTRAY_DIR=pullrequests
-			BINTRAY_DESC="[${TRAVIS_REPO_SLUG}] Download: https://dl.bintray.com/${BINTRAY_REPO}/${BINTRAY_DIR}/${ARCHIVE}"
-		else
-			BINTRAY_DIR=snapshots
-			BINTRAY_DESC="[${PROJECT}] [${TRAVIS_BRANCH}] Commit: https://github.com/${GITHUB_USER}/${PROJECT}/commit/${TRAVIS_COMMIT}"
-	fi
+	# if [ "${TRAVIS_PULL_REQUEST}" != "false" ];
+	# 	then
+	# 		BINTRAY_DIR=pullrequests
+	# 		BINTRAY_DESC="[${TRAVIS_REPO_SLUG}] Download: https://dl.bintray.com/${BINTRAY_REPO}/${BINTRAY_DIR}/${ARCHIVE}"
+	# 	else
+	# 		BINTRAY_DIR=snapshots
+	# 		BINTRAY_DESC="[${PROJECT}] [${TRAVIS_BRANCH}] Commit: https://github.com/${GITHUB_USER}/${PROJECT}/commit/${TRAVIS_COMMIT}"
+	# fi
 
-	# use the commit id as 'version' for bintray
-	BINTRAY_VERSION=$TRAVIS_COMMIT
+	# # use the commit id as 'version' for bintray
+	# BINTRAY_VERSION=$TRAVIS_COMMIT
 
-	echo "Deploying $ARCHIVE to ${BINTRAY_HOST}/${BINTRAY_REPO}"
-	echo "See result at ${BINTRAY_HOST}/${BINTRAY_REPO}/${BINTRAY_DIR}#files"
+	# echo "Deploying $ARCHIVE to ${BINTRAY_HOST}/${BINTRAY_REPO}"
+	# echo "See result at ${BINTRAY_HOST}/${BINTRAY_REPO}/${BINTRAY_DIR}#files"
 
-	# See https://bintray.com/docs/api for a description of the REST API
-	# in their terminology:
-	# - :subject is the owner of the account (aranym in our case)
-	# - :repo is aranym-files
-	# - :package either snapshots, releases or pullrequests
-	# - for snapshot builds, the commit id is used as version number
+	# # See https://bintray.com/docs/api for a description of the REST API
+	# # in their terminology:
+	# # - :subject is the owner of the account (aranym in our case)
+	# # - :repo is aranym-files
+	# # - :package either snapshots, releases or pullrequests
+	# # - for snapshot builds, the commit id is used as version number
 
-	CURL="curl --silent -u ${BINTRAY_USER}:${BINTRAY_API_KEY} -H Accept:application/json -w \n"
+	# CURL="curl --silent -u ${BINTRAY_USER}:${BINTRAY_API_KEY} -H Accept:application/json -w \n"
 
-	cd "$OUT"
+	# cd "$OUT"
 
-	#create version:
-	echo "creating version ${BINTRAY_DIR}/${BINTRAY_VERSION}"
-	# do not fail if the version exists;
-	# it might have been created already by other CI scripts
-	$CURL --data '{"name":"'"${BINTRAY_VERSION}"'","released":"'"${RELEASE_DATE}"'","desc":"'"${BINTRAY_DESC}"'","published":true}' --header 'Content-Type: application/json' "${BINTRAY_HOST}/packages/${BINTRAY_REPO}/${BINTRAY_DIR}/versions"
-	echo ""
+	# #create version:
+	# echo "creating version ${BINTRAY_DIR}/${BINTRAY_VERSION}"
+	# # do not fail if the version exists;
+	# # it might have been created already by other CI scripts
+	# $CURL --data '{"name":"'"${BINTRAY_VERSION}"'","released":"'"${RELEASE_DATE}"'","desc":"'"${BINTRAY_DESC}"'","published":true}' --header 'Content-Type: application/json' "${BINTRAY_HOST}/packages/${BINTRAY_REPO}/${BINTRAY_DIR}/versions"
+	# echo ""
 
-	#upload file(s):
-	echo "upload ${BINTRAY_DIR}/${ARCHIVE}"
-	$CURL --upload "${ARCHIVE}" "${BINTRAY_HOST}/content/${BINTRAY_REPO}/${BINTRAY_DIR}/${BINTRAY_VERSION}/${BINTRAY_DIR}/${ARCHIVE}?publish=1&override=1&explode=0"
-	echo ""
+	# #upload file(s):
+	# echo "upload ${BINTRAY_DIR}/${ARCHIVE}"
+	# $CURL --upload "${ARCHIVE}" "${BINTRAY_HOST}/content/${BINTRAY_REPO}/${BINTRAY_DIR}/${BINTRAY_VERSION}/${BINTRAY_DIR}/${ARCHIVE}?publish=1&override=1&explode=0"
+	# echo ""
 
-	# publish the version
-	echo "publish ${BINTRAY_DIR}/${BINTRAY_VERSION}"
-	$CURL --data '' "${BINTRAY_HOST}/content/${BINTRAY_REPO}/${BINTRAY_DIR}/${BINTRAY_VERSION}/publish?publish_wait_for_secs=-1" || exit 1
-	echo ""
-
+	# # publish the version
+	# echo "publish ${BINTRAY_DIR}/${BINTRAY_VERSION}"
+	# $CURL --data '' "${BINTRAY_HOST}/content/${BINTRAY_REPO}/${BINTRAY_DIR}/${BINTRAY_VERSION}/publish?publish_wait_for_secs=-1" || exit 1
+	# echo ""
 }
 
 # build snap in emu
 if [ "$emu" = true ] ; then
+	snap_install
 	snap_build
     exit 0
 else
@@ -343,21 +370,10 @@ else
 		esac
 	else # deploy job
 		echo "------------ deploy ------------"
-		uncache_deploy
+		get_cache
+		normal_deploy
 		if ! [ "${TRAVIS_PULL_REQUEST}" != "false" ]; then
 			bined
-			case "$arch" in
-				armhf)
-					docker run --rm --env-file <(env) \
-						-v "/home/travis":"/home/travis" -w "/home/travis" \
-						arm32v7/ubuntu:16.04 "${TRAVIS_BUILD_DIR}/.travis/in_emu.sh"
-				;;
-				aarch)
-					docker run --rm --env-file <(env) \
-						-v "/home/travis":"/home/travis" -w "/home/travis" \
-						arm64v8/ubuntu:16.04 "${TRAVIS_BUILD_DIR}/.travis/in_emu.sh"	
-				;;
-			esac
 			snap_push
 		fi
 	fi
