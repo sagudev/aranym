@@ -26,7 +26,7 @@ apt install -y locales
 localedef -i en_US -c -f UTF-8 -A /usr/share/locale/locale.alias en_US.UTF-8
 . ./.travis/install_prerequisities.sh
 . ./.travis/setup_env.sh
-if ! ( echo $is | grep -q deploy ); then
+if ! [ "$deploy" = true ]; then
 . ./.travis/build.sh
 fi
 if ( echo $arch_build | grep -q i386 ) || [ -z "$arch" ]; then 

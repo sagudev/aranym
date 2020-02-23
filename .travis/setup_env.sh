@@ -17,7 +17,7 @@ fi
 if echo "" | gcc -dM  -E - | grep -q "__arm.*__"; then
 	CPU_TYPE=arm
 fi
-if ( echo $is | grep -q deploy ); then
+if [ "$deploy" = true ]; then
 	CPU_TYPE=$arch
 fi
 if ( echo $arch_build | grep -q i386 ); then

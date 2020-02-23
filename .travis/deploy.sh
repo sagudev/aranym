@@ -312,7 +312,7 @@ if [ "$emu" = true ] ; then
     exit 0
 else
 	# Check if it is deploy or build job
-	if ! ( echo $is | grep -q deploy ); then # build job
+	if ! [ "$deploy" = true ]; then # build job
 		case "$TRAVIS_OS_NAME" in
 			linux) # if linux use cache
 				if ! ( echo $arch_build | grep -q armhf ); then # Except if is not armhf linux

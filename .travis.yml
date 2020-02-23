@@ -95,7 +95,7 @@ matrix:
       os: linux
       dist: xenial
       env: 
-        - is=deploy
+        - deploy=true
         - arch=armhf
       before_install:
         - .travis/install_ssh_id.sh
@@ -108,7 +108,7 @@ matrix:
       os: linux
       dist: xenial
       env: 
-        - is=deploy
+        - deploy=true
         - arch=aarch
       before_install:
         - .travis/install_ssh_id.sh

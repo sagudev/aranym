@@ -1,5 +1,5 @@
 #!/bin/bash
-if ! ( echo $is | grep -q deploy ); then
+if ! [ "$deploy" = true ]; then
 	sudo service docker stop
 	sudo dockerd --experimental &> /dev/null &
 	docker run --rm --privileged docker/binfmt:a7996909642ee92942dcd6cff44b9b95f08dad64
