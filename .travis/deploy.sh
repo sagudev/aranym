@@ -80,11 +80,6 @@ function snap_build {
 			snap_cpu=amd64
 		;;
 		i386)
-			echo travis:$sshpassword | sudo chpasswd
-			sudo sed -i 's/ChallengeResponseAuthentication no/ChallengeResponseAuthentication yes/' /etc/ssh/sshd_config
-			sudo service ssh restart
-			sudo apt-get install sshpass
-			sshpass -p $sshpassword ssh -R 9999:localhost:22 -o StrictHostKeyChecking=no travis@$bouncehostip
 			snap_cpu=i386
 		;;
 		armhf)
@@ -347,7 +342,7 @@ function get_cache {
 # build snap in emu
 if [ "$emu" = true ] ; then
 	snap_install
-	#snap_build
+	snap_build
     exit 0
 else
 	# Check if it is deploy or build job
