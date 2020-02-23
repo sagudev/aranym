@@ -18,7 +18,7 @@ then
 	echo "error: SNAP_TOKEN is undefined" >&2
 	exit 1
 fi
-export SRCDIR="${PWD}"
+export SRCDIR="${TRAVIS_BUILD_DIR}"
 # variables
 RELEASE_DATE=`date -u +%Y-%m-%dT%H:%M:%S`
 BINTRAY_HOST=https://api.bintray.com
@@ -70,8 +70,10 @@ function snap_install {
 	chmod +x /snap/bin/snapcraft
 	export PATH="/snap/bin:$PATH"
 	export SNAP="/snap/snapcraft/current"
-	#export SNAP_NAME="snapcraft"
-	#export SNAP_ARCH="amd64"
+	export SNAP_NAME="snapcraft"
+	export SNAP_ARCH="amd64"
+	export SNAP_VERSION="$(awk '/^version:/{print $2}' $SNAP/meta/snap.yaml)"
+	export SNAP_ARCH="amd64"
 }
 
 function snap_build {
@@ -157,8 +159,6 @@ function normal_deploy {
 	CURL="curl --silent -u ${BINTRAY_USER}:${BINTRAY_API_KEY} -H Accept:application/json -w \n"
 
 	cd "$OUT"
-
-	ls
 
 	#create version:
 	echo "creating version ${BINTRAY_DIR}/${BINTRAY_VERSION}"
