@@ -47,6 +47,11 @@ function snap_install {
       	curl \
       	jq \
       	squashfs-tools
+	# Grab the core snap (for backwards compatibility) from the stable channel and
+	# unpack it in the proper place.
+	curl -L $(curl -H 'X-Ubuntu-Series: 16' 'https://api.snapcraft.io/api/v1/snaps/details/core' | jq '.download_url' -r) --output core.snap
+	mkdir -p /snap/core
+	unsquashfs -d /snap/core/current core.snap
 	# Grab the core18 snap (which snapcraft uses as a base) from the stable channel
 	# and unpack it in the proper place
 	curl -L $(curl -H 'X-Ubuntu-Series: 16' 'https://api.snapcraft.io/api/v1/snaps/details/core18' | jq '.download_url' -r) --output core18.snap
@@ -54,7 +59,7 @@ function snap_install {
 	unsquashfs -d /snap/core18/current core18.snap
 	# Grab the snapcraft snap from the edge channel and unpack it in the proper
 	# place.
-	curl -L $(curl -H 'X-Ubuntu-Series: 16' 'https://api.snapcraft.io/api/v1/snaps/details/snapcraft?channel=edge' | jq '.download_url' -r) --output snapcraft.snap
+	curl -L $(curl -H 'X-Ubuntu-Series: 16' 'https://api.snapcraft.io/api/v1/snaps/details/snapcraft?channel=stable' | jq '.download_url' -r) --output snapcraft.snap
 	mkdir -p /snap/snapcraft
 	unsquashfs -d /snap/snapcraft/current snapcraft.snap
 	# Create a snapcraft runner
@@ -65,8 +70,8 @@ function snap_install {
 	chmod +x /snap/bin/snapcraft
 	export PATH="/snap/bin:$PATH"
 	export SNAP="/snap/snapcraft/current"
-	#ENV SNAP_NAME="snapcraft"
-	#ENV SNAP_ARCH="amd64"
+	#export SNAP_NAME="snapcraft"
+	#export SNAP_ARCH="amd64"
 }
 
 function snap_build {
