@@ -158,6 +158,8 @@ function normal_deploy {
 
 	cd "$OUT"
 
+	ls
+
 	#create version:
 	echo "creating version ${BINTRAY_DIR}/${BINTRAY_VERSION}"
 	# do not fail if the version exists;
