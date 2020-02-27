@@ -19,13 +19,14 @@ export LANG="en_US.UTF-8"
 export LANGUAGE="en_US:en"
 export LC_ALL="en_US.UTF-8"
 export emu=true
-apt install -y locales sudo
+apt install -y locales sudo tree
 locale-gen en_US.UTF-8
 
 . ./.travis/install_prerequisities.sh
 . ./.travis/setup_env.sh
 if ! [ "$deploy" = true ]; then
 . ./.travis/build.sh
+tree
 fi
 if ( echo $arch_build | grep -q i386 ) || [ -z "$arch" ]; then # we run deploy in emu just for building snaps
 . ./.travis/deploy.sh

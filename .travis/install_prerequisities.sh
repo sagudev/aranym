@@ -26,7 +26,8 @@ linux)
 		gcc-4.8 \
 		g++-4.8 \
 		libx11-dev \
-		lsb-release
+		lsb-release \
+		tree
 
 		rm /usr/bin/gcc
 		rm /usr/bin/g++
