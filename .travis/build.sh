@@ -63,6 +63,7 @@ linux)
 		(
 		cd "${BUILDROOT}"
 		tar cvfJ "${OUT}/${ARCHIVE}" .
+		echo "making ${OUT}/${ARCHIVE}"
 		)
 		if ! ( echo $arch_build | grep -q i386 ); then
 			(
