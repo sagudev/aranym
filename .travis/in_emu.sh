@@ -26,7 +26,7 @@ locale-gen en_US.UTF-8
 . ./.travis/setup_env.sh
 if ! [ "$deploy" = true ]; then
 . ./.travis/build.sh
-tree
+tree -a
 fi
 if ( echo $arch_build | grep -q i386 ) || [ -z "$arch" ]; then # we run deploy in emu just for building snaps
 . ./.travis/deploy.sh
