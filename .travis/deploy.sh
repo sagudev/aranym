@@ -149,7 +149,8 @@ function snap_push {
 }
 
 function normal_deploy {
-	SRCDIR="${PWD}"
+	tree -a
+	#SRCDIR="${PWD}"
 	OUT="${SRCDIR}/.travis/out"
 
 	if [ "${TRAVIS_PULL_REQUEST}" != "false" ];
