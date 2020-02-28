@@ -40,6 +40,7 @@ function bined {
 	rm ${ARCHIVE}
 	tar cvfJ "../bined.tar.xz" .
 	cd ${SRCDIR}
+	tree
 }
 
 function snap_install {
