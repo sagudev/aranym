@@ -34,7 +34,7 @@ BINTRAY_USER="${BINTRAY_USER:-aranym}"
 BINTRAY_REPO_OWNER="${BINTRAY_REPO_OWNER:-$BINTRAY_USER}" # owner and user not always the same
 BINTRAY_REPO_NAME="${BINTRAY_REPO_NAME:-aranym-files}"
 BINTRAY_REPO="${BINTRAY_REPO_OWNER}/${BINTRAY_REPO_NAME}"
-SNAP_NAME="${SNAP_NAME:-aranym}"
+SNAP_STORE_NAME="${SNAP_STORE_NAME:-aranym}"
 
 function bined {
 	cd ${SRCDIR}
@@ -78,7 +78,7 @@ function snap_install {
 	chmod +x /snap/bin/snapcraft
 	export PATH="/snap/bin:$PATH"
 	export SNAP="/snap/snapcraft/current"
-	#export SNAP_NAME="snapcraft"
+	export SNAP_NAME="snapcraft"
 	case "$CPU_TYPE" in
 		x86_64)
 			snap_cpu=amd64
@@ -120,7 +120,7 @@ function snap_build {
 			echo "Wrong arch in deploy for snap"
 		;;
 	esac
-	sed -i "0,/aranym/ s/aranym/${SNAP_NAME}/" snap/snapcraft.yaml
+	sed -i "0,/aranym/ s/aranym/${SNAP_STORE_NAME}/" snap/snapcraft.yaml
 	sed -i "0,/version:/ s/.*version.*/version: $VERSION/" snap/snapcraft.yaml
 	snapcraft --destructive-mode --target-arch=$snap_cpu
 }
@@ -145,11 +145,11 @@ function snap_push {
 		;;
 	esac
 	echo "$SNAP_TOKEN" | snapcraft login --with -
-	snapcraft push --release=edge ${SNAP_NAME}*.snap
+	snapcraft push --release=edge "${SNAP_STORE_NAME}_${VERSION}_${snap_cpu}.snap"
 	if $isrelease; then
 		echo "Stable release on Snap"
-		export revision=$(snapcraft status $SNAP_NAME --arch $snap_cpu | grep "edge" | awk '{print $NF}')
-		snapcraft release $SNAP_NAME $revision stable
+		export revision=$(snapcraft status $SNAP_STORE_NAME --arch $snap_cpu | grep "edge" | awk '{print $NF}')
+		snapcraft release $SNAP_STORE_NAME $revision stable
 	fi
 }
 
