@@ -46,6 +46,7 @@ function bined {
 	cd bined
 	tar xf ${ARCHIVE}
 	rm ${ARCHIVE}
+	sudo chmod -Rf 777 .
 	tar cvfJ "../bined.tar.xz" .
 	cd ${SRCDIR}
 }
@@ -364,8 +365,8 @@ function get_cache {
 
 # build snap in emu
 if [ "$emu" = true ] ; then
-	snap_install
 	bined
+	snap_install
 	snap_build
     exit 0
 else
