@@ -89,11 +89,6 @@ linux)
 	# 	VENDOR=Ubuntu
 	# 	archive_tag=-xenial-${CPU_TYPE}
 	# fi
-	if [ -z "$typec" ]; then
-		export ARCHIVE="${PROJECT_LOWER}-${ATAG}.tar.xz"
-	else
-		export ARCHIVE="${PROJECT_LOWER}-${CPU_TYPE}-${TRAVIS_COMMIT}-${typec}.tar.xz"
-	fi
 	;;
 
 osx)
@@ -138,3 +133,10 @@ case $CPU_TYPE in
 	i[3456]86 | x86_64 | arm*) build_jit=true ;;
 	*) build_jit=false ;;
 esac
+if ( echo $TRAVIS_OS_NAME | grep -q linux ); then
+	if [ -z "$typec" ]; then
+		export ARCHIVE="${PROJECT_LOWER}-${ATAG}.tar.xz"
+	else
+		export ARCHIVE="${PROJECT_LOWER}-${CPU_TYPE}-${TRAVIS_COMMIT}-${typec}.tar.xz"
+	fi
+fi

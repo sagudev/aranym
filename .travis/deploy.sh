@@ -379,11 +379,11 @@ else
 					if ! ( echo $arch_build | grep -q aarch ); then
 						echo "------------ normal ------------"
 						normal_deploy
-						if ! [ "${TRAVIS_PULL_REQUEST}" != "false" ]; then
+						if ! ( echo $arch_build | grep -q i386 ); then
 							bined
 							snap_build
-							snap_push
 						fi
+						snap_push
 					else
 						echo "------------ cache ------------"
 						cache_deploy
@@ -405,9 +405,8 @@ else
 		echo "------------ deploy ------------"
 		get_cache
 		normal_deploy
-		if ! [ "${TRAVIS_PULL_REQUEST}" != "false" ]; then
-			bined
-			snap_push
-		fi
+		bined
+		snap_build
+		snap_push
 	fi
 fi
