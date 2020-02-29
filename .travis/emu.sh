@@ -19,8 +19,8 @@ if ! [ "$deploy" = true ]; then
 				-v "/home/travis":"/home/travis" -w "${PWD}" \
 				arm64v8/ubuntu:16.04 "${TRAVIS_BUILD_DIR}/.travis/in_emu.sh"	
 		;;
-		sudo chmod -Rf 777 /home/travis
 	esac
+	sudo chmod -Rf 777 /home/travis
 else
 	case "$arch" in
 		armhf)
