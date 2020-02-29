@@ -1,6 +1,18 @@
 #!/bin/bash
 
 echo rvm_autoupdate_flag=0 >> ~/.rvmrc
+if [ "$deploy" = true ]; then
+sudo apt-get update
+sudo apt-get install -y -qq \
+	curl \
+	wget \
+	git \
+	zsync \
+	xz-utils \
+	libjson-perl \
+	libwww-perl \
+	lsb-release
+fi
 
 case "$TRAVIS_OS_NAME" in
 linux)
