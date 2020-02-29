@@ -51,7 +51,6 @@ function bined {
 }
 
 function snap_install {
-	cd ${SRCDIR}
 	apt install -y \
       	curl \
       	jq \
@@ -79,7 +78,7 @@ function snap_install {
 	chmod +x /snap/bin/snapcraft
 	export PATH="/snap/bin:$PATH"
 	export SNAP="/snap/snapcraft/current"
-	export SNAP_NAME="snapcraft"
+	#export SNAP_NAME="snapcraft"
 	case "$CPU_TYPE" in
 		x86_64)
 			snap_cpu=amd64
@@ -146,7 +145,7 @@ function snap_push {
 		;;
 	esac
 	echo "$SNAP_TOKEN" | snapcraft login --with -
-	snapcraft push --release=edge *.snap
+	snapcraft push --release=edge ${SNAP_NAME}*.snap
 	if $isrelease; then
 		echo "Stable release on Snap"
 		export revision=$(snapcraft status $SNAP_NAME --arch $snap_cpu | grep "edge" | awk '{print $NF}')
