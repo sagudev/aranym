@@ -35,35 +35,35 @@ matrix:
       language: objective-c
     - env: 
         - arch_build=armhf
-        - typec=1
+        - typec=jit
       before_install:
         - . ./.travis/emu.sh
       script:
         - echo "skipped" # skip tag
     - env: 
         - arch_build=armhf
-        - typec=2
+        - typec=mmu
       before_install:
         - . ./.travis/emu.sh
       script:
         - echo "skipped" # skip tag
     - env: 
         - arch_build=armhf
-        - typec=3
+        - typec=nor
       before_install:
         - . ./.travis/emu.sh
       script:
         - echo "skipped" # skip script tag
     - env: 
         - arch_build=aarch
-        - typec=2
+        - typec=mmu
       before_install:
         - . ./.travis/emu.sh
       script:
         - echo "skipped" # skip script tag
     - env: 
         - arch_build=aarch
-        - typec=3
+        - typec=nor
       before_install:
         - . ./.travis/emu.sh
       script:

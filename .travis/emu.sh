@@ -32,7 +32,6 @@ if ! [ "$deploy" = true ]; then
 		;;
 	esac
 	sudo chmod -Rf 777 /home/travis
-	tree -a
 else
 	case "$arch" in
 		armhf)

@@ -18,6 +18,14 @@ then
 	echo "error: SNAP_TOKEN is undefined" >&2
 	exit 1
 fi
+if [ -z "$ARCHIVE" ]
+then
+	if [ -z "$typec" ]; then
+		export ARCHIVE="${PROJECT_LOWER}-${ATAG}.tar.xz"
+	else
+		export ARCHIVE="${PROJECT_LOWER}-${CPU_TYPE}-${TRAVIS_COMMIT}-${typec}.tar.xz"
+	fi
+fi
 export SRCDIR="${TRAVIS_BUILD_DIR}"
 # variables
 RELEASE_DATE=`date -u +%Y-%m-%dT%H:%M:%S`
@@ -148,7 +156,6 @@ function snap_push {
 }
 
 function normal_deploy {
-	tree -a
 	#SRCDIR="${PWD}"
 	OUT="${SRCDIR}/.travis/out"
 

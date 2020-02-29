@@ -89,6 +89,11 @@ linux)
 	# 	VENDOR=Ubuntu
 	# 	archive_tag=-xenial-${CPU_TYPE}
 	# fi
+	if [ -z "$typec" ]; then
+		export ARCHIVE="${PROJECT_LOWER}-${ATAG}.tar.xz"
+	else
+		export ARCHIVE="${PROJECT_LOWER}-${CPU_TYPE}-${TRAVIS_COMMIT}-${typec}.tar.xz"
+	fi
 	;;
 
 osx)
