@@ -19,7 +19,7 @@ export LANG="en_US.UTF-8"
 export LANGUAGE="en_US:en"
 export LC_ALL="en_US.UTF-8"
 export emu=true
-apt install -y locales sudo tree
+apt install -y locales sudo
 locale-gen en_US.UTF-8
 
 . ./.travis/install_prerequisities.sh

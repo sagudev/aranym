@@ -26,16 +26,13 @@ linux)
 		gcc-4.8 \
 		g++-4.8 \
 		libx11-dev \
-		lsb-release \
-		tree
+		lsb-release
 
 		rm /usr/bin/gcc
 		rm /usr/bin/g++
 		ln -s /usr/bin/gcc-4.8 /usr/bin/gcc
 		ln -s /usr/bin/g++-4.8 /usr/bin/g++
 		gcc -v
-		/usr/bin/sdl-config --version
-		sdl-config --version
 	;;
 
 osx)

@@ -57,9 +57,9 @@ function snap_install {
       	squashfs-tools
 	# Grab the core snap (for backwards compatibility) from the stable channel and
 	# unpack it in the proper place.
-	curl -L $(curl -H 'X-Ubuntu-Series: 16' 'https://api.snapcraft.io/api/v1/snaps/details/core' | jq '.download_url' -r) --output core.snap
-	mkdir -p /snap/core
-	unsquashfs -d /snap/core/current core.snap
+	#curl -L $(curl -H 'X-Ubuntu-Series: 16' 'https://api.snapcraft.io/api/v1/snaps/details/core' | jq '.download_url' -r) --output core.snap
+	#mkdir -p /snap/core
+	#unsquashfs -d /snap/core/current core.snap
 	# Grab the core18 snap (which snapcraft uses as a base) from the stable channel
 	# and unpack it in the proper place
 	curl -L $(curl -H 'X-Ubuntu-Series: 16' 'https://api.snapcraft.io/api/v1/snaps/details/core18' | jq '.download_url' -r) --output core18.snap
@@ -205,7 +205,7 @@ function normal_deploy {
 	echo ""
 
 	# purge old snapshots
-	if test "$TRAVIS_OS_NAME" = linux; then
+	if ( echo $arch_build | grep -q amd64 ); then
 		perl "$SRCDIR/.travis/purge-snapshots.pl"
 	fi
 
@@ -222,7 +222,7 @@ function normal_deploy {
 		
 	#upload file(s):
 		# we only need to upload the src archive once
-		if test "$TRAVIS_OS_NAME" = linux; then
+		if ( echo $arch_build | grep -q amd64 ); then
 			for ext in gz bz2 xz lz; do
 				SRCARCHIVE="${PROJECT_LOWER}-${VERSION}.tar.${ext}"
 				if test -f "${SRCARCHIVE}"; then
