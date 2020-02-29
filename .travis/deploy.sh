@@ -51,6 +51,7 @@ function bined {
 }
 
 function snap_install {
+	cd ${SRCDIR}
 	apt install -y \
       	curl \
       	jq \
@@ -91,7 +92,6 @@ function snap_install {
 		;;
 		aarch)
 			snap_cpu=arm64
-			sed -i '65,91d' snap/snapcraft.yaml # no jit in aarch64
 		;;
 		*)
 			echo "Wrong arch in deploy for snap"
@@ -102,6 +102,7 @@ function snap_install {
 }
 
 function snap_build {
+	cd ${SRCDIR}
 	case "$CPU_TYPE" in
 		x86_64)
 			snap_cpu=amd64
@@ -126,6 +127,7 @@ function snap_build {
 }
 
 function snap_push {
+	cd ${SRCDIR}
 	case "$CPU_TYPE" in
 		x86_64)
 			snap_cpu=amd64
@@ -138,14 +140,11 @@ function snap_push {
 		;;
 		aarch)
 			snap_cpu=arm64
-			sed -i '65,91d' snap/snapcraft.yaml # no jit in aarch64
 		;;
 		*)
 			echo "Wrong arch in deploy for snap"
 		;;
 	esac
-	sed -i "0,/aranym/ s/aranym/${SNAP_NAME}/" snap/snapcraft.yaml
-	sed -i "0,/version:/ s/.*version.*/version: $VERSION/" snap/snapcraft.yaml
 	echo "$SNAP_TOKEN" | snapcraft login --with -
 	snapcraft push --release=edge *.snap
 	if $isrelease; then
