@@ -1,4 +1,15 @@
 #!/bin/bash
+sudo apt-get update
+sudo apt-get install -y -qq \
+	curl \
+	wget \
+	git \
+	zsync \
+	xz-utils \
+	libjson-perl \
+	libwww-perl \
+	lsb-release \
+	tree
 sudo service docker stop
 sudo dockerd --experimental &> /dev/null &
 docker run --rm --privileged docker/binfmt:a7996909642ee92942dcd6cff44b9b95f08dad64
@@ -35,14 +46,4 @@ else
 				arm64v8/ubuntu:16.04 "${TRAVIS_BUILD_DIR}/.travis/in_emu.sh"	
 		;;
 	esac
-	sudo apt-get update
-	sudo apt-get install -y -qq \
-		curl \
-		wget \
-		git \
-		zsync \
-		xz-utils \
-		libjson-perl \
-		libwww-perl \
-		lsb-release
 fi
