@@ -98,9 +98,29 @@ matrix:
         - deploy=true
         - arch=aarch
     - if: type = pull_request
-      env: arch=armhf
+      env: 
+        - deploy=true
+        - arch=armhf
     - if: type = pull_request
-      env: is=deploy
+      env: 
+        - arch_build=armhf
+        - typec=jit
+    - if: type = pull_request
+      env: 
+        - arch_build=armhf
+        - typec=mmu
+    - if: type = pull_request
+      env: 
+        - arch_build=armhf
+        - typec=nor
+    - if: type = pull_request
+      env: 
+        - arch_build=aarch
+        - typec=mmu
+    - if: type = pull_request
+      env: 
+        - arch_build=aarch
+        - typec=nor
 
 before_install:
   - .travis/install_ssh_id.sh
