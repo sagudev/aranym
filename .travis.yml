@@ -94,7 +94,9 @@ matrix:
       language: objective-c
   exclude:
     - if: type = pull_request
-      env: arch=aarch
+      env: 
+        - deploy=true
+        - arch=aarch
     - if: type = pull_request
       env: arch=armhf
     - if: type = pull_request
