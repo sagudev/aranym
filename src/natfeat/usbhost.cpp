@@ -291,6 +291,7 @@ int usbhost_release_device(int virtdev_index)
 		if (r < 0) {
 			D(bug("USBHost: Releasing interface %d failed", if_index));
 		}
+		libusb_attach_kernel_driver(devh[dev_index], if_index);
 	}
 	virtual_device[virtdev_index].connected = false;
 	port_number = virtual_device[virtdev_index].port_number;
@@ -804,8 +805,9 @@ int32 USBHost::submit_int_msg(uint32 /* pipe */, memptr /* buffer */,
 }
 
 
-int32 USBHost::submit_bulk_msg(uint32 pipe, memptr buffer, int32 len)
+int32 USBHost::submit_bulk_msg(uint32 pipe, memptr buffer, int32 len, int32 flags, uint32 timeout)
 {
+	UNUSED(flags);
 	D(bug("\nUSBHost: submit_bulk_msg()"));
 
 	uint8 *tempbuff;
@@ -837,7 +839,7 @@ int32 USBHost::submit_bulk_msg(uint32 pipe, memptr buffer, int32 len)
 		}
 	}
 
-	r = libusb_bulk_transfer(devh[dev_idx], endpoint, tempbuff, len, &transferred, 1000);
+	r = libusb_bulk_transfer(devh[dev_idx], endpoint, tempbuff, len, &transferred, timeout < 1000 ? 1000 : timeout);
 	D(bug("USBHost: return: %d len: %d transferred: %d", r, len, transferred));
 
 	return r;
@@ -901,7 +903,7 @@ int32 USBHost::dispatch(uint32 fncode)
 			break;
 
 		case USBHOST_SUBMIT_BULK_MSG:
-			ret = submit_bulk_msg(getParameter(0), getParameter(1), getParameter(2));
+			ret = submit_bulk_msg(getParameter(0), getParameter(1), getParameter(2), getParameter(3), getParameter(4));
 			break;
 		default:
 			D(bug("USBHost: unimplemented function #%d", fncode));
@@ -927,33 +929,7 @@ USBHost::USBHost()
 
 USBHost::~USBHost()
 {
-	int i = USB_MAX_DEVICE - 1;
-	unsigned int port_number = 0;
-
 	if (init_flag) {
-		while (i >= 0) {
-			if (devh[i] != NULL) {
-			D(bug("USBHost: Trying to close device %d", i));
-
-			while (port_number < NUMBER_OF_PORTS) {
-				if (roothub.port[port_number].libusb_dev_idx == i) {
-					if (libusb_release_interface(devh[i], roothub.port[port_number].interface) < 0) {
-						D(bug("USBHost: unable to release device interface"));
-					}
-					if (libusb_attach_kernel_driver(devh[i], roothub.port[port_number].interface) < 0) {
-						D(bug("USBHost: unable to reattach kernel driver to interface"));
-					}
-					break;
-				}
-				port_number++;
-			}
-			libusb_close(devh[i]);
-			devh[i] = NULL;
-			D(bug("USBHost: %d device closed", i));
-			}
-			i--;
-		}
-
 		usbhost_free_usb_devices();
 		libusb_exit(NULL);
 	}

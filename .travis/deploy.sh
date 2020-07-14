@@ -92,6 +92,7 @@ function snap_install {
 		;;
 		aarch)
 			snap_cpu=arm64
+			sed -i '65,91d' snap/snapcraft.yaml # no jit in aarch64
 		;;
 		*)
 			echo "Wrong arch in deploy for snap"
